@@ -1,0 +1,67 @@
+# built application files
+*.apk
+*.ap_
+ 
+# files for the dex VM
+*.dex
+ 
+# Java class files
+*.class
+ 
+# generated files
+bin/
+gen/
+lint.xml
+ 
+ 
+# Local configuration file (sdk path, etc)
+local.properties
+ 
+# eclipse settings
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+ 
+# External tool builders
+.externalToolBuilders/
+ 
+# Locally stored "Eclipse launch configurations"
+*.launch
+ 
+# CDT-specific
+.cproject
+ 
+# PDT-specific
+.buildpath
+ 
+# Intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+ 
+.DS_Store
+ 
+# Android Studio
+.gradle/
+.idea/
+gradle/
+build/
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
+*.iml
+
+# http://android.benigumo.com/20130621/android-studio-%E3%81%A7-gitignore-%E3%81%AF%E3%81%A9%E3%81%86%E6%9B%B8%E3%81%84%E3%81%A8%E3%81%8F%E3%81%AE%E3%81%8C%E3%81%84%E3%81%84%E3%81%AE%E3%81%8B%E3%83%BC/
