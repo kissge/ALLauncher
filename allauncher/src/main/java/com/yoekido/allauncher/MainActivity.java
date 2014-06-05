@@ -81,12 +81,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         points = new LinkedList<Coord>();
         handler = new Handler();
 
-        LinkedList<Unistroke> usList = new LinkedList<Unistroke>();
-        usList.push(Unistroke.of("Triangle",
-                new Coord[]{new Coord(137, 139), new Coord(135, 141), new Coord(133, 144), new Coord(132, 146), new Coord(130, 149), new Coord(128, 151), new Coord(126, 155), new Coord(123, 160), new Coord(120, 166), new Coord(116, 171), new Coord(112, 177), new Coord(107, 183), new Coord(102, 188), new Coord(100, 191), new Coord(95, 195), new Coord(90, 199), new Coord(86, 203), new Coord(82, 206), new Coord(80, 209), new Coord(75, 213), new Coord(73, 213), new Coord(70, 216), new Coord(67, 219), new Coord(64, 221), new Coord(61, 223), new Coord(60, 225), new Coord(62, 226), new Coord(65, 225), new Coord(67, 226), new Coord(74, 226), new Coord(77, 227), new Coord(85, 229), new Coord(91, 230), new Coord(99, 231), new Coord(108, 232), new Coord(116, 233), new Coord(125, 233), new Coord(134, 234), new Coord(145, 233), new Coord(153, 232), new Coord(160, 233), new Coord(170, 234), new Coord(177, 235), new Coord(179, 236), new Coord(186, 237), new Coord(193, 238), new Coord(198, 239), new Coord(200, 237), new Coord(202, 239), new Coord(204, 238), new Coord(206, 234), new Coord(205, 230), new Coord(202, 222), new Coord(197, 216), new Coord(192, 207), new Coord(186, 198), new Coord(179, 189), new Coord(174, 183), new Coord(170, 178), new Coord(164, 171), new Coord(161, 168), new Coord(154, 160), new Coord(148, 155), new Coord(143, 150), new Coord(138, 148), new Coord(136, 148)}));
-        usList.push(Unistroke.of("check",
-                new Coord[]{new Coord(127, 141), new Coord(124, 140), new Coord(120, 139), new Coord(118, 139), new Coord(116, 139), new Coord(111, 140), new Coord(109, 141), new Coord(104, 144), new Coord(100, 147), new Coord(96, 152), new Coord(93, 157), new Coord(90, 163), new Coord(87, 169), new Coord(85, 175), new Coord(83, 181), new Coord(82, 190), new Coord(82, 195), new Coord(83, 200), new Coord(84, 205), new Coord(88, 213), new Coord(91, 216), new Coord(96, 219), new Coord(103, 222), new Coord(108, 224), new Coord(111, 224), new Coord(120, 224), new Coord(133, 223), new Coord(142, 222), new Coord(152, 218), new Coord(160, 214), new Coord(167, 210), new Coord(173, 204), new Coord(178, 198), new Coord(179, 196), new Coord(182, 188), new Coord(182, 177), new Coord(178, 167), new Coord(170, 150), new Coord(163, 138), new Coord(152, 130), new Coord(143, 129), new Coord(140, 131), new Coord(129, 136), new Coord(126, 139)}));
-        recognizer = new OneDollarRecognizer(usList);
+        recognizer = new OneDollarRecognizer();
     }
 
     ;
