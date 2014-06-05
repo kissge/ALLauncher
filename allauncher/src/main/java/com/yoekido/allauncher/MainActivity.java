@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,7 +32,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private Bitmap background;
     private Canvas canvas;
     private Paint paint;
-    private LinkedList<Coord> points;
+    private List<Coord> points;
     private Status status = Status.STANDBY;
     private Timer timer = null;
     private Handler handler;
@@ -83,8 +84,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         recognizer = new OneDollarRecognizer();
     }
-
-    ;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -12,7 +12,7 @@ public class Coord {
         this.y = y;
     }
 
-    static public float pathDistance(List<Coord> pts1, List<Coord> pts2) {
+    public static float pathDistance(List<Coord> pts1, List<Coord> pts2) {
         float d = 0.0f;
         for (int i = 0; i < pts1.size(); i++) {
             d += distance(pts1.get(i), pts2.get(i));
@@ -20,15 +20,15 @@ public class Coord {
         return d / pts1.size();
     }
 
-    static public float pathLength(List<Coord> points) {
+    public static float pathLength(List<Coord> points) {
         float d = 0.0f;
         for (int i = 1; i < points.size(); i++) {
-            d += Coord.distance(points.get(i - 1), points.get(i));
+            d += distance(points.get(i - 1), points.get(i));
         }
         return d;
     }
 
-    static public Coord centroid(List<Coord> points) {
+    public static Coord centroid(List<Coord> points) {
         float x = 0.0f, y = 0.0f;
         for (Coord p : points) {
             x += p.x;
@@ -37,13 +37,13 @@ public class Coord {
         return new Coord(x / points.size(), x / points.size());
     }
 
-    static public float distance(Coord p1, Coord p2) {
+    public static float distance(Coord p1, Coord p2) {
         float dx = p1.x - p2.x;
         float dy = p1.y - p2.y;
         return (float) Math.sqrt(dx * dx + dy * dy);
     }
 
-    static RectF boundingBox(List<Coord> points) {
+    public static RectF boundingBox(List<Coord> points) {
         float minX = Float.MAX_VALUE;
         float maxX = Float.MIN_VALUE;
         float minY = Float.MAX_VALUE;

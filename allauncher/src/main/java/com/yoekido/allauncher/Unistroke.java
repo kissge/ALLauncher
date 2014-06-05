@@ -18,9 +18,9 @@ public class Unistroke {
     }
 
     public static Unistroke of(String name, Coord[] points) {
-        LinkedList<Coord> points2 = new LinkedList<Coord>();
+        List<Coord> points2 = new LinkedList<Coord>();
         for (Coord p : points) {
-            points2.push(p);
+            points2.add(p);
         }
         return new Unistroke(name, points2);
     }
