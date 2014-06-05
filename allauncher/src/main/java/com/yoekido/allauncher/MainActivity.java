@@ -75,6 +75,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         paint.setPathEffect(new DashPathEffect(new float[]{60.0f, 90.0f}, 0));
         canvas.drawOval(new RectF(30.0f, metrics.heightPixels / 2.0f + 30.0f, metrics.widthPixels - 30.0f, metrics.heightPixels - 30.0f), paint);
 
+        paint.setPathEffect(null);
         paint.setStyle(Paint.Style.FILL);
 
         points = new LinkedList<Coord>();
