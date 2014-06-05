@@ -64,7 +64,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -104,14 +104,5 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         findViewById(R.id.imageView).invalidate();
         return true;
-    }
-
-    private class Coord {
-        public float x, y;
-
-        Coord(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
     }
 }
