@@ -34,7 +34,7 @@ public class Coord {
             x += p.x;
             y += p.y;
         }
-        return new Coord(x / points.size(), x / points.size());
+        return new Coord(x / points.size(), y / points.size());
     }
 
     public static float distance(Coord p1, Coord p2) {
