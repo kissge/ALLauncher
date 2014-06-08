@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -37,6 +38,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private Timer timer = null;
     private Handler handler;
     private OneDollarRecognizer recognizer;
+    private DisplayMetrics metrics;
+    private int selection = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +50,11 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         BitmapDrawable wallpaper = (BitmapDrawable) getWallpaper();
         background = wallpaper.getBitmap();
 
-        DisplayMetrics metrics = new DisplayMetrics();
+        metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        Bitmap bitmap2 = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(bitmap2);
+        Bitmap bitmap = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
         canvas.drawBitmap(background, 0, 0, paint);
 
         paint = new Paint();
@@ -60,7 +63,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setAntiAlias(true);
 
-        imageView.setImageBitmap(bitmap2);
+        imageView.setImageBitmap(bitmap);
         imageView.setOnTouchListener(this);
 
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
@@ -71,13 +74,12 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         paint.setColor(Color.argb(64, 255, 0, 0));
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(80.0f);
-        canvas.drawText("Draw here", metrics.widthPixels / 2.0f, metrics.heightPixels * 3.0f / 4.0f + 20.0f, paint);
+        canvas.drawText("Draw here", metrics.widthPixels / 2.0f, metrics.heightPixels * 0.5f + 20.0f, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setPathEffect(new DashPathEffect(new float[]{60.0f, 90.0f}, 0));
-        canvas.drawOval(new RectF(30.0f, metrics.heightPixels / 2.0f + 30.0f, metrics.widthPixels - 30.0f, metrics.heightPixels - 30.0f), paint);
+        canvas.drawOval(new RectF(30.0f, 30.0f, metrics.widthPixels - 30.0f, metrics.heightPixels - 30.0f), paint);
 
         paint.setPathEffect(null);
-        paint.setStyle(Paint.Style.FILL);
 
         points = new LinkedList<Coord>();
         handler = new Handler();
@@ -109,26 +111,26 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                points.clear();
-                if (event.getY() * 2.0f < v.getHeight()) {
-                    return true;
-                }
-                status = Status.GESTURE;
-                if (timer != null) {
-                    timer.cancel();
-                }
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                if (status == Status.GESTURE) {
-                    points.clear();
+
+        if (status == Status.STANDBY) {
+            draw();
+            status = Status.GESTURE;
+            points.clear();
+            points.add(new Coord(x, y));
+            if (timer != null) {
+                timer.cancel();
+            }
+        } else if (status == Status.GESTURE) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP:
+                    if (timer != null) {
+                        timer.cancel();
+                    }
                     status = Status.STANDBY;
-                }
-                break;
-            default:
-                if (status == Status.GESTURE) {
+                    draw();
+                    break;
+                default:
                     if (timer != null) {
                         timer.cancel();
                     }
@@ -143,43 +145,100 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                                 }
                             });
                         }
-                    }, 100);
-                } else {
-                    return true;
-                }
-        }
-
-        canvas.drawBitmap(background, 0, 0, paint);
-
-        if (status == Status.GESTURE) {
-            if (!points.isEmpty() && points.get(points.size() - 1).equals(x, y)) {
-                return true;
+                    }, 50);
             }
-            points.add(new Coord(x, y));
-            paint.setColor(Color.rgb(27, 48, 117));
-            for (int i = 0; i < points.size() - 1; i++)
-                canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y, paint);
-            paint.setColor(Color.rgb(255, 0, 0));
-            canvas.drawCircle(x, y, 15.5f, paint);
+
+            if (!points.get(points.size() - 1).equals(x, y)) {
+                points.add(new Coord(x, y));
+                draw();
+            }
+        } else {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                status = Status.STANDBY;
+                Toast.makeText(this, "" + selection, Toast.LENGTH_SHORT).show();
+                draw();
+            } else {
+                draw(x, y);
+            }
         }
 
-        findViewById(R.id.imageView).invalidate();
         return true;
     }
 
-    protected void invoke() {
-        if (points.size() < 10) {
+    private void draw(float x, float y) {
+        draw();
+
+        x = 4 * (x - points.get(points.size() - 1).x);
+        y = 4 * (y - points.get(points.size() - 1).y);
+
+        double length = Math.sqrt(x * x + y * y);
+        if (length >= 1.6 * 80.0) {
+            x *= 1.8 * 80.0 / length;
+            y *= 1.8 * 80.0 / length;
+            selection = (8 + (int) Math.round(4 * Math.atan2(y, x) / Math.PI)) % 8;
+
+            canvas.drawCircle(
+                    (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * selection / 4)),
+                    (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * selection / 4)),
+                    80.0f, paint);
+        } else {
+            selection = -1;
+        }
+
+        paint.setColor(Color.rgb(88, 88, 255));
+        canvas.drawLine(metrics.widthPixels * 0.5f, 280.0f,
+                metrics.widthPixels * 0.5f + x, 280.0f + y, paint);
+
+        findViewById(R.id.imageView).invalidate();
+    }
+
+    private void draw() {
+        canvas.drawBitmap(background, 0, 0, paint);
+
+        if (status == Status.GESTURE) {
+            paint.setColor(Color.rgb(27, 48, 117));
+            for (int i = 0; i < points.size() - 1; i++) {
+                canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y, paint);
+            }
+            paint.setColor(Color.rgb(255, 0, 0));
+            canvas.drawCircle(points.get(points.size() - 1).x, points.get(points.size() - 1).y, 15.5f, paint);
+        } else if (status == Status.TAIL) {
+            paint.setColor(Color.argb(64, 255, 0, 0));
+            Path path = new Path();
+            path.moveTo(points.get(0).x, points.get(0).y);
+            for (int i = 1; i < points.size(); i++) {
+                path.lineTo(points.get(i).x, points.get(i).y);
+            }
+            canvas.drawPath(path, paint);
+
+            paint.setColor(Color.argb(64, 128, 128, 128));
+            for (int i = 0; i < 8; i++) {
+                canvas.drawCircle(
+                        (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * i / 4)),
+                        (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * i / 4)),
+                        80.0f, paint);
+            }
+        }
+
+        findViewById(R.id.imageView).invalidate();
+    }
+
+    private void invoke() {
+        if (points.size() < 10 || status != Status.GESTURE) {
             return;
         }
-        paint.setColor(Color.rgb(255, 0, 0));
-        for (int i = 0; i < points.size() - 1; i++)
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i + 1).x, points.get(i + 1).y, paint);
-        findViewById(R.id.imageView).invalidate();
-        status = Status.TAIL;
 
         Unistroke recognized = recognizer.recognize(points);
-        String result = recognized == null ? "Nothing matched." : recognized.name;
-        Toast.makeText(this, result + " (" + recognizer.score + ")", Toast.LENGTH_SHORT).show();
+        if (recognized != null) {
+            status = Status.TAIL;
+            Toast.makeText(this, recognized.name + String.format(" (%2.1f%%)", recognizer.score * 100), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, String.format("? (%2.1f%%)", recognizer.score * 100), Toast.LENGTH_SHORT).show();
+            canvas.drawBitmap(background, 0, 0, paint);
+            status = Status.STANDBY;
+        }
+
+        draw();
     }
 
     enum Status {STANDBY, GESTURE, TAIL}

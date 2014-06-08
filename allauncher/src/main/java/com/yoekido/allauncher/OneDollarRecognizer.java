@@ -33,6 +33,9 @@ public class OneDollarRecognizer {
 
         if (u != null) {
             score = 1.0 - Math.sqrt(2.0) * (double) b / squareSize;
+            if (score < 0.7) {
+                u = null;
+            }
         } else {
             score = Float.NEGATIVE_INFINITY;
         }
