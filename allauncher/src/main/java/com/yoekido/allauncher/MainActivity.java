@@ -60,7 +60,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         canvas.drawBitmap(background, 0, 0, paint);
 
         paint = new Paint();
-        paint.setStrokeWidth(30.0f);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setAntiAlias(true);
@@ -77,6 +76,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(80.0f);
         canvas.drawText("Draw here", metrics.widthPixels / 2.0f, metrics.heightPixels * 0.5f + 20.0f, paint);
+        paint.setStrokeWidth(30.0f);
         paint.setStyle(Paint.Style.STROKE);
         paint.setPathEffect(new DashPathEffect(new float[]{60.0f, 90.0f}, 0));
         canvas.drawOval(new RectF(30.0f, 30.0f, metrics.widthPixels - 30.0f, metrics.heightPixels - 30.0f), paint);
@@ -173,6 +173,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private void draw(float x, float y) {
         draw();
+        paint.setStrokeWidth(30.0f);
+        paint.setStyle(Paint.Style.STROKE);
 
         x = 4 * (x - points.get(points.size() - 1).x);
         y = 4 * (y - points.get(points.size() - 1).y);
@@ -182,11 +184,10 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             x *= 1.8 * 80.0 / length;
             y *= 1.8 * 80.0 / length;
             selection = (8 + (int) Math.round(4 * Math.atan2(y, x) / Math.PI)) % 8;
-
-            canvas.drawCircle(
-                    (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * selection / 4)),
-                    (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * selection / 4)),
-                    80.0f, paint);
+            float x2 = (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * selection / 4));
+            float y2 = (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * selection / 4));
+            paint.setColor(Color.argb(64, 128, 128, 128));
+            canvas.drawCircle(x2, y2, 80.0f, paint);
         } else {
             selection = -1;
         }
@@ -199,6 +200,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     }
 
     private void draw() {
+        paint.setStrokeWidth(30.0f);
         canvas.drawBitmap(background, 0, 0, paint);
 
         if (status == Status.GESTURE) {
@@ -221,9 +223,18 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             for (int i = 0; i < 8; i++) {
                 float x = (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * i / 4));
                 float y = (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * i / 4));
-                if (candidates.size() > i) {
-                    candidates.get(i).icon.setBounds((int) x - 40, (int) y - 40, (int) x + 40, (int) y + 40);
+                if (candidates.size() > i && candidates.get(i) != null) {
+                    int size = selection == i ? 60 : 40;
+                    candidates.get(i).icon.setBounds((int) x - size, (int) y - size, (int) x + size, (int) y + size);
                     candidates.get(i).icon.draw(canvas);
+                    paint.setTextSize(16.0f);
+                    paint.setStrokeWidth(3.0f);
+                    paint.setColor(Color.argb(128, 0, 0, 0));
+                    paint.setStyle(Paint.Style.FILL_AND_STROKE);
+                    canvas.drawText(candidates.get(i).name, x, y + size + 10, paint);
+                    paint.setColor(Color.rgb(255, 255, 255));
+                    paint.setStyle(Paint.Style.FILL);
+                    canvas.drawText(candidates.get(i).name, x, y + size + 10, paint);
                 }
             }
         }
