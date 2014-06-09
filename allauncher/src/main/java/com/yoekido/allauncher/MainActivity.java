@@ -40,6 +40,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private OneDollarRecognizer recognizer;
     private DisplayMetrics metrics;
     private int selection = -1;
+    private AppsManager appsManager;
+    private List<AppsManager.App> candidates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         handler = new Handler();
 
         recognizer = new OneDollarRecognizer();
+
+        appsManager = new AppsManager(this.getApplication());
     }
 
     @Override
@@ -155,7 +159,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         } else {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 status = Status.STANDBY;
-                Toast.makeText(this, "" + selection, Toast.LENGTH_SHORT).show();
+                if (0 <= selection && selection < candidates.size()) {
+                    startActivity(candidates.get(selection).intent);
+                }
                 draw();
             } else {
                 draw(x, y);
@@ -213,10 +219,12 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
             paint.setColor(Color.argb(64, 128, 128, 128));
             for (int i = 0; i < 8; i++) {
-                canvas.drawCircle(
-                        (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * i / 4)),
-                        (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * i / 4)),
-                        80.0f, paint);
+                float x = (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * i / 4));
+                float y = (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * i / 4));
+                if (candidates.size() > i) {
+                    candidates.get(i).icon.setBounds((int) x - 40, (int) y - 40, (int) x + 40, (int) y + 40);
+                    candidates.get(i).icon.draw(canvas);
+                }
             }
         }
 
@@ -231,7 +239,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         Unistroke recognized = recognizer.recognize(points);
         if (recognized != null) {
             status = Status.TAIL;
-            Toast.makeText(this, recognized.name + String.format(" (%2.1f%%)", recognizer.score * 100), Toast.LENGTH_SHORT).show();
+            candidates = appsManager.get(recognized.name.toLowerCase());
         } else {
             Toast.makeText(this, String.format("? (%2.1f%%)", recognizer.score * 100), Toast.LENGTH_SHORT).show();
             canvas.drawBitmap(background, 0, 0, paint);
