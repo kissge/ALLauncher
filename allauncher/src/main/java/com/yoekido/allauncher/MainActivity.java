@@ -160,7 +160,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 status = Status.STANDBY;
                 if (0 <= selection && selection < candidates.size()) {
-                    startActivity(candidates.get(selection).intent);
+                    startActivity(this.getApplication().getPackageManager().getLaunchIntentForPackage(candidates.get(selection).packageName));
                 }
                 draw();
             } else {

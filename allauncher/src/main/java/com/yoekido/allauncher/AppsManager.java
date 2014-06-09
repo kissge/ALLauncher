@@ -1,7 +1,6 @@
 package com.yoekido.allauncher;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -20,7 +19,7 @@ public class AppsManager {
         for (ApplicationInfo appInfo : applications) {
             App app = new App(pm, appInfo);
             Character c = app.name.charAt(0);
-            if (app.intent != null && ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z')) {
+            if (pm.getLaunchIntentForPackage(app.packageName) != null && ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z')) {
                 String label = c.toString().toLowerCase();
                 List<App> list = dictionary.containsKey(label) ? dictionary.get(label) : new LinkedList<App>();
                 list.add(app);
@@ -40,12 +39,12 @@ public class AppsManager {
     public class App {
         public Drawable icon;
         public String name;
-        public Intent intent;
+        public String packageName;
 
         App(PackageManager pm, ApplicationInfo info) {
             this.icon = info.loadIcon(pm);
             this.name = info.loadLabel(pm).toString();
-            this.intent = pm.getLaunchIntentForPackage(info.packageName);
+            this.packageName = info.packageName;
         }
     }
 }
