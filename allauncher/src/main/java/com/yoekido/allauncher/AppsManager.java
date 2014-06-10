@@ -23,8 +23,8 @@ public class AppsManager {
                     Character c = app.name.charAt(i);
                     if (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z')) {
                         String label = c.toString().toLowerCase();
-                        List<App> list = dictionary.containsKey(label) ? dictionary.get(label) : new LinkedList<App>();
-                        list.add(app);
+                        List<App> list = dictionary.containsKey(label) ? dictionary.get(label) : reservedList();
+                        add(list, app);
                         dictionary.put(label, list);
                         break;
                     }
@@ -38,6 +38,23 @@ public class AppsManager {
             return dictionary.get(label);
         } else {
             return new LinkedList<App>();
+        }
+    }
+
+    private List<App> reservedList() {
+        List<App> list = new LinkedList<App>();
+        for (int i = 0; i < 8; i++) {
+            list.add(null);
+        }
+        return list;
+    }
+
+    private void add(List<App> list, App element) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) == null) {
+                list.set(i, element);
+                return;
+            }
         }
     }
 

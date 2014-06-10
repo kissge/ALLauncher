@@ -159,7 +159,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         } else {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 status = Status.STANDBY;
-                if (0 <= selection && selection < candidates.size()) {
+                if (selection >= 0 && candidates.get(selection) != null) {
                     startActivity(this.getApplication().getPackageManager().getLaunchIntentForPackage(candidates.get(selection).packageName));
                 }
                 draw();
@@ -224,7 +224,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             for (int i = 0; i < 8; i++) {
                 float x = (float) (metrics.widthPixels * 0.5 + 2.6 * 80.0 * Math.cos(Math.PI * i / 4));
                 float y = (float) (280.0 + 2.6 * 80.0 * Math.sin(Math.PI * i / 4));
-                if (candidates.size() > i && candidates.get(i) != null) {
+                if (i < candidates.size() && candidates.get(i) != null) {
                     int size = selection == i ? 60 : 40;
                     candidates.get(i).icon.setBounds((int) x - size, (int) y - size, (int) x + size, (int) y + size);
                     candidates.get(i).icon.draw(canvas);
