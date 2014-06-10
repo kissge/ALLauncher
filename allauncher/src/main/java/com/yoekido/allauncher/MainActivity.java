@@ -201,6 +201,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     private void draw() {
         paint.setStrokeWidth(30.0f);
+        paint.setStyle(Paint.Style.STROKE);
         canvas.drawBitmap(background, 0, 0, paint);
 
         if (status == Status.GESTURE) {
