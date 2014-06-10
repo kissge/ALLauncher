@@ -18,12 +18,17 @@ public class AppsManager {
         dictionary = new Hashtable<String, List<App>>();
         for (ApplicationInfo appInfo : applications) {
             App app = new App(pm, appInfo);
-            Character c = app.name.charAt(0);
-            if (pm.getLaunchIntentForPackage(app.packageName) != null && ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z')) {
-                String label = c.toString().toLowerCase();
-                List<App> list = dictionary.containsKey(label) ? dictionary.get(label) : new LinkedList<App>();
-                list.add(app);
-                dictionary.put(label, list);
+            if (pm.getLaunchIntentForPackage(app.packageName) != null) {
+                for (int i = 0; i < app.name.length(); i++) {
+                    Character c = app.name.charAt(i);
+                    if (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z')) {
+                        String label = c.toString().toLowerCase();
+                        List<App> list = dictionary.containsKey(label) ? dictionary.get(label) : new LinkedList<App>();
+                        list.add(app);
+                        dictionary.put(label, list);
+                        break;
+                    }
+                }
             }
         }
     }
