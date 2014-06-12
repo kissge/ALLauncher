@@ -5,32 +5,42 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
 public class AppsManager {
     public Hashtable<String, List<App>> dictionary;
+    protected Application application;
 
     AppsManager(Application application) {
-        PackageManager pm = application.getPackageManager();
-        List<ApplicationInfo> applications = pm.getInstalledApplications(0);
+        // dummy data
+        this.application = application;
         dictionary = new Hashtable<String, List<App>>();
-        for (ApplicationInfo appInfo : applications) {
-            App app = new App(pm, appInfo);
-            if (pm.getLaunchIntentForPackage(app.packageName) != null) {
-                for (int i = 0; i < app.name.length(); i++) {
-                    Character c = app.name.charAt(i);
-                    if (('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z')) {
-                        String label = c.toString().toLowerCase();
-                        List<App> list = dictionary.containsKey(label) ? dictionary.get(label) : reservedList();
-                        add(list, app);
-                        dictionary.put(label, list);
-                        break;
-                    }
-                }
-            }
-        }
+        dictionary.put("c",
+                Arrays.asList(new App(android.R.drawable.ic_menu_camera, "Camera"),
+                        new App(android.R.drawable.ic_menu_compass, "Compass"),
+                        new App(android.R.drawable.ic_menu_call, "Call"), null,
+                        new App(android.R.drawable.ic_menu_month, "Calendar"), null,
+                        new App(android.R.drawable.ic_menu_myplaces, "Check-in"), null)
+        );
+        dictionary.put("m",
+                Arrays.asList(new App(android.R.drawable.ic_dialog_email, "Mail"), null,
+                        new App(android.R.drawable.ic_menu_edit, "Memo"), null,
+                        new App(android.R.drawable.ic_menu_mapmode, "Map"), null, null, null)
+        );
+        dictionary.put("p",
+                Arrays.asList(new App(android.R.drawable.ic_media_play, "Play"), null,
+                        new App(android.R.drawable.ic_media_pause, "Pause"), null,
+                        new App(android.R.drawable.ic_menu_gallery, "Picture"), null, null, null)
+        );
+        dictionary.put("s",
+                Arrays.asList(new App(android.R.drawable.ic_menu_share, "Share"), null,
+                        new App(android.R.drawable.ic_menu_search, "Search"), null,
+                        new App(android.R.drawable.ic_menu_preferences, "Settings"), null,
+                        new App(android.R.drawable.ic_menu_save, "Save"), null)
+        );
     }
 
     public List<App> get(String label) {
@@ -67,6 +77,12 @@ public class AppsManager {
             this.icon = info.loadIcon(pm);
             this.name = info.loadLabel(pm).toString();
             this.packageName = info.packageName;
+        }
+
+        App(int icon, String name) {
+            this.icon = application.getResources().getDrawable(icon);
+            this.name = name;
+            this.packageName = null;
         }
     }
 }
