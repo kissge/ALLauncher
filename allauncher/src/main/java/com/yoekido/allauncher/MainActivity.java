@@ -42,6 +42,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private int selection = -1;
     private AppsManager appsManager;
     private List<AppsManager.App> candidates;
+    private UserTest userTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +90,12 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         recognizer = new OneDollarRecognizer();
 
         appsManager = new AppsManager(this.getApplication());
+
+        userTest = new UserTest(canvas, paint, findViewById(R.id.imageView), background, appsManager, this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -105,8 +107,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_usertest) {
+            userTest.start();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -117,6 +119,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         float y = event.getY();
 
         if (status == Status.STANDBY) {
+            userTest.touch();
             draw();
             status = Status.GESTURE;
             points.clear();
@@ -159,10 +162,10 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         } else {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 status = Status.STANDBY;
-                if (0 <= selection && selection < candidates.size() && candidates.get(selection) != null) {
-                    startActivity(this.getApplication().getPackageManager().getLaunchIntentForPackage(candidates.get(selection).packageName));
-                }
                 draw();
+                if (0 <= selection && selection < candidates.size() && candidates.get(selection) != null) {
+                    userTest.next(candidates.get(selection).name);
+                }
             } else {
                 draw(x, y);
             }
