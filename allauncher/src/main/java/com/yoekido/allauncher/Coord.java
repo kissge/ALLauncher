@@ -57,6 +57,10 @@ public class Coord {
         return new RectF(minX, minY, maxX, maxY);
     }
 
+    public String toString() {
+        return "new Coord(" + ((int) x) + "," + ((int) y) + ")";
+    }
+
     public boolean equals(float x, float y) {
         return this.x == x && this.y == y;
     }

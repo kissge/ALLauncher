@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -257,6 +259,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
             candidates = appsManager.get(recognized.name.toLowerCase());
         } else {
             Toast.makeText(this, String.format("? (%2.1f%%)", recognizer.score * 100), Toast.LENGTH_SHORT).show();
+            Log.d("Unrecognizable", Arrays.toString(points.toArray()));
             canvas.drawBitmap(background, 0, 0, paint);
             status = Status.STANDBY;
         }
