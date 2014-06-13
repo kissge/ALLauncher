@@ -45,6 +45,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private AppsManager appsManager;
     private List<AppsManager.App> candidates;
     private UserTest userTest;
+    private String recognizedGesture = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +167,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 status = Status.STANDBY;
                 draw();
                 if (0 <= selection && selection < candidates.size() && candidates.get(selection) != null) {
+                    recognizer.addSample(recognizedGesture, points);
                     userTest.next(candidates.get(selection).name);
                 }
             } else {
@@ -254,9 +256,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         }
 
         Unistroke recognized = recognizer.recognize(points);
+
+        //Log.d("Recognized", Arrays.toString(points.toArray()));
+
         if (recognized != null) {
             status = Status.TAIL;
             candidates = appsManager.get(recognized.name.toLowerCase());
+            recognizedGesture = recognized.name.toLowerCase();
         } else {
             Toast.makeText(this, String.format("? (%2.1f%%)", recognizer.score * 100), Toast.LENGTH_SHORT).show();
             Log.d("Unrecognizable", Arrays.toString(points.toArray()));

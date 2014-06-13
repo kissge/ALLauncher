@@ -79,7 +79,7 @@ public class UserTest {
     }
 
     private void showText(String text) {
-        paint.setTextSize(130.0f);
+        paint.setTextSize(100.0f);
         paint.setStrokeWidth(30.0f);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawBitmap(background, 0, 0, paint);
@@ -92,7 +92,7 @@ public class UserTest {
             boolean correct = tests.get(count - 1).equals(answer);
             Toast.makeText(activity, correct ? "Correct!" : "Wrong :(", Toast.LENGTH_SHORT).show();
             Log.d("UserTest", "Test " + count + " " + (correct ? "correct" : "wrong"));
-            if (count >= tests.size()) {
+            if (count >= 20) {
                 Log.d("UserTest", "-- finish --");
                 paint.setColor(Color.rgb(255, 0, 0));
                 showText("Finish");
